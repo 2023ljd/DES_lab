@@ -4,6 +4,8 @@
 
 #include "des.h"
 
+
+//PC-1
 int initial_key_permutaion[] = {57, 49,  41, 33,  25,  17,  9,
 								 1, 58,  50, 42,  34,  26, 18,
 								10,  2,  59, 51,  43,  35, 27,
@@ -12,7 +14,7 @@ int initial_key_permutaion[] = {57, 49,  41, 33,  25,  17,  9,
 								 7, 62,  54, 46,  38,  30, 22,
 								14,  6,  61, 53,  45,  37, 29,
 								21, 13,   5, 28,  20,  12,  4};
-
+//IP
 int initial_message_permutation[] =	   {58, 50, 42, 34, 26, 18, 10, 2,
 										60, 52, 44, 36, 28, 20, 12, 4,
 										62, 54, 46, 38, 30, 22, 14, 6,
@@ -21,9 +23,9 @@ int initial_message_permutation[] =	   {58, 50, 42, 34, 26, 18, 10, 2,
 										59, 51, 43, 35, 27, 19, 11, 3,
 										61, 53, 45, 37, 29, 21, 13, 5,
 										63, 55, 47, 39, 31, 23, 15, 7};
-
+//密钥扩展算法第i轮循环左移量
 int key_shift_sizes[] = {-1, 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
-
+//PC-2
 int sub_key_permutation[] =    {14, 17, 11, 24,  1,  5,
 								 3, 28, 15,  6, 21, 10,
 								23, 19, 12,  4, 26,  8,
@@ -32,7 +34,7 @@ int sub_key_permutation[] =    {14, 17, 11, 24,  1,  5,
 								30, 40, 51, 45, 33, 48,
 								44, 49, 39, 56, 34, 53,
 								46, 42, 50, 36, 29, 32};
-
+//E
 int message_expansion[] =  {32,  1,  2,  3,  4,  5,
 							 4,  5,  6,  7,  8,  9,
 							 8,  9, 10, 11, 12, 13,
@@ -81,7 +83,7 @@ int S8[] = {13,  2,  8,  4,  6, 15, 11,  1, 10,  9,  3, 14,  5,  0, 12,  7,
 			 1, 15, 13,  8, 10,  3,  7,  4, 12,  5,  6, 11,  0, 14,  9,  2,
 			 7, 11,  4,  1,  9, 12, 14,  2,  0,  6, 10, 13, 15,  3,  5,  8,
 			 2,  1, 14,  7,  4, 10,  8, 13, 15, 12,  9,  0,  3,  5,  6, 11};
-
+//P
 int right_sub_message_permutation[] =    {16,  7, 20, 21,
 									29, 12, 28, 17,
 									 1, 15, 23, 26,
@@ -90,7 +92,7 @@ int right_sub_message_permutation[] =    {16,  7, 20, 21,
 									32, 27,  3,  9,
 									19, 13, 30,  6,
 									22, 11,  4, 25};
-
+//IP^{-1}^
 int final_message_permutation[] =  {40,  8, 48, 16, 56, 24, 64, 32,
 									39,  7, 47, 15, 55, 23, 63, 31,
 									38,  6, 46, 14, 54, 22, 62, 30,
@@ -100,7 +102,8 @@ int final_message_permutation[] =  {40,  8, 48, 16, 56, 24, 64, 32,
 									34,  2, 42, 10, 50, 18, 58, 26,
 									33,  1, 41,  9, 49, 17, 57, 25};
 
-
+/************************************* */
+//没有用到的三个函数
 void print_char_as_binary(char input) {
 	int i;
 	for (i=0; i<8; i++) {
@@ -144,7 +147,8 @@ void print_key_set(key_set key_set){
 	}
 	printf("\n");
 }
-
+/************************************** */
+//密钥扩展方案
 void generate_sub_keys(unsigned char* main_key, key_set* key_sets) {
 	int i, j;
 	int shift_size;
@@ -152,7 +156,7 @@ void generate_sub_keys(unsigned char* main_key, key_set* key_sets) {
 
 	for (i=0; i<8; i++) {
 		key_sets[0].k[i] = 0;
-	}
+	}//初始化
 
 	for (i=0; i<56; i++) {
 		shift_size = initial_key_permutaion[i];
@@ -161,23 +165,24 @@ void generate_sub_keys(unsigned char* main_key, key_set* key_sets) {
 		shift_byte <<= ((shift_size - 1)%8);
 
 		key_sets[0].k[i/8] |= (shift_byte >> i%8);
-	}
+	}//PC-1,将种子密钥K用选择函数PC-1置换（校验位没有对其产生影响）
+	//种子密钥K只有7个字节（56 bit）
 
 	for (i=0; i<3; i++) {
 		key_sets[0].c[i] = key_sets[0].k[i];
-	}
+	}//左半部分（28 bit , 3.5Byte）
 
-	key_sets[0].c[3] = key_sets[0].k[3] & 0xF0;
+	key_sets[0].c[3] = key_sets[0].k[3] & 0xF0;//左半部分
 
 	for (i=0; i<3; i++) {
 		key_sets[0].d[i] = (key_sets[0].k[i+3] & 0x0F) << 4;
 		key_sets[0].d[i] |= (key_sets[0].k[i+4] & 0xF0) >> 4;
-	}
+	}//右半部分
 
-	key_sets[0].d[3] = (key_sets[0].k[6] & 0x0F) << 4;
+	key_sets[0].d[3] = (key_sets[0].k[6] & 0x0F) << 4;//右半部分
 
 
-	for (i=1; i<17; i++) {
+	for (i=1; i<17; i++) {//产生16个子密钥的环节
 		for (j=0; j<4; j++) {
 			key_sets[i].c[j] = key_sets[i-1].c[j];
 			key_sets[i].d[j] = key_sets[i-1].d[j];
@@ -188,7 +193,7 @@ void generate_sub_keys(unsigned char* main_key, key_set* key_sets) {
 			shift_byte = 0x80;
 		} else {
 			shift_byte = 0xC0;
-		}
+		}//shift_size:第i轮的循环移位数，shift_byte:移动了哪几位
 
 		// Process C
 		first_shift_bits = shift_byte & key_sets[i].c[0];
@@ -225,6 +230,7 @@ void generate_sub_keys(unsigned char* main_key, key_set* key_sets) {
 
 		key_sets[i].d[3] <<= shift_size;
 		key_sets[i].d[3] |= (first_shift_bits >> (4 - shift_size));
+		//循环移位过程结束
 
 		for (j=0; j<48; j++) {
 			shift_size = sub_key_permutation[j];
@@ -239,11 +245,20 @@ void generate_sub_keys(unsigned char* main_key, key_set* key_sets) {
 			}
 
 			key_sets[i].k[j/8] |= (shift_byte >> j%8);
-		}
+		}//PC-2，选取48bit
 	}
 }
 
 void process_message(unsigned char* message_piece, unsigned char* processed_piece, key_set* key_sets, int mode) {
+	
+	
+	//用于Test Vectors(第2块):输出当前为第几组加密
+	//======================
+	static int which_block = 0 ;
+	printf("\t第%d块信息:\n" , ++which_block) ;
+	//======================
+
+	
 	int i, k;
 	int shift_size;
 	unsigned char shift_byte;
@@ -404,6 +419,20 @@ void process_message(unsigned char* message_piece, unsigned char* processed_piec
 			l[i] = ln[i];
 			r[i] = rn[i];
 		}
+
+
+		//Test Vectors 的一部分(第3块)，输出每一轮的加/解密过程
+		//=======================
+		printf("\t\t第%02d轮%s结果:\t" , k , (mode==ENCRYPTION_MODE ? "加密" : "解密")) ;
+		printf("L[%02d]: " , k) ;
+		for(int i=0 ; i<4 ; i++)
+			printf("%02X " , l[i]) ;
+		printf("\tR[%02d]: ", k) ;
+		for(int i=0 ; i<4 ; i++)
+			printf("%02X " , r[i]) ;
+		printf("\n") ;
+		//========================
+
 	}
 
 	unsigned char pre_end_permutation[8];
@@ -420,4 +449,32 @@ void process_message(unsigned char* message_piece, unsigned char* processed_piec
 
 		processed_piece[i/8] |= (shift_byte >> i%8);
 	}
+
 }
+
+//处理输入的密钥，进行加减校验位的操作，结果为k56,k64(des_key)两种串
+//======================
+void process_input_key(unsigned char* k56, unsigned char* k64, const unsigned char* input_key, short MODE) {
+	int shift_size ;
+	if(MODE == K56_MODE) {
+		for(int i=0 ; i<7 ; i++) 
+			k56[i] = input_key[i] ;
+		for(int i=0 ; i<64 ; i++) {
+			if(i%8 == 7) {
+				k64[i>>3] |= 1^((k64[i>>3]>>1)&1)^((k64[i>>3]>>2)&1)^((k64[i>>3]>>3)&1)
+							^((k64[i>>3]>>4)&1)^((k64[i>>3]>>5)&1)^((k64[i>>3]>>6)&1)^((k64[i>>3]>>7)&1) ;
+			}else {
+				shift_size = i-(i>>3) ;
+				k64[i>>3] |= ( (k56[shift_size>>3] >> (7-(shift_size&7))) &1) << (7-(i&7)) ;
+			}
+		}
+	}else if(MODE == K64_MODE) {
+		for(int i=0 ; i<8 ; i++)
+			k64[i] = input_key[i] ;
+		for(int i=0 ; i<56 ; i++) {
+			shift_size = i+((i+(i>>3)+1)>>3 ) ;
+			k56[i>>3] |= ( (k64[shift_size>>3] >> (7-(shift_size&7))) &1) << (7-(i&7)) ;
+		}
+	}
+}
+//=========================
