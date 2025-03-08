@@ -208,7 +208,7 @@ int main(int argc, char* argv[]) {
 
 		//输出Test Vectors的第1部分：每轮加密的子密钥
 		//================================
-		printf("\n\n\tTEST VECTORS\n\t============================================================\n\n") ;
+		printf("\n\n\tTEST VECTORS\n\t========================================================================\n\n") ;
 		printf("\t下面是生成的16轮子密钥.\n\n") ;
 		for(int i=1 ; i<=16 ; i++){
 			printf("\t\t第%02d轮子密钥k[%02d]:\t", i, i) ;
@@ -286,7 +286,7 @@ int main(int argc, char* argv[]) {
 		//加入的控制台最后输出部分：加密/解密 , 输入info , 输出info ; 
 		unsigned char *get_info = (unsigned char*)malloc(sizeof(char)*1) ;
 		if(strcmp(argv[1], ACTION_ENCRYPT) == 0) {
-			printf("\n\t=====================================================================\n\t加密 过程结束.\n\n") ;
+			printf("\n\t=======================================================================\n\t加密 过程结束.\n\n") ;
 			printf("\t\t 明文(待处理数据):\t") ;
 			while(fread(get_info,1,1,input_file)) {
 				printf("%02X " , *get_info) ;
@@ -296,7 +296,7 @@ int main(int argc, char* argv[]) {
 				printf("%02X " , *get_info) ;
 			}
 		}else {
-			printf("\n\t======================================================================\n\t解密 过程结束.\n\n") ;
+			printf("\n\t=======================================================================\n\t解密 过程结束.\n\n") ;
 			printf("\t\t 密文(待处理数据):\t") ;
 			while(fread(get_info,1,1,input_file)) {
 				printf("%02X " , *get_info) ;
