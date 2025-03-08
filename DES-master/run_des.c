@@ -90,7 +90,7 @@ int main(int argc, char* argv[]) {
 			printf("\n\t已检测到64位密钥." , K64_MODE) ;
 			process_input_key(k56,des_key, input_key, K64_MODE) ;
 		}else {
-			printf("\t密钥长度错误!\n\n") ;
+			printf("\n\t密钥长度错误!\n\n") ;
 			return 1 ;
 		}
 

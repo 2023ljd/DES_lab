@@ -18,7 +18,7 @@ void generate_key(unsigned char* key);
 void generate_sub_keys(unsigned char* main_key, key_set* key_sets);
 void process_message(unsigned char* message_piece, unsigned char* processed_piece, key_set* key_sets, int mode);
 
-//自己定义的函数@2023_ljd
+//自己定义的函数
 void process_input_key(unsigned char* k56, unsigned char* k64, const unsigned char* input_key, short MODE) ;
 
 #endif
