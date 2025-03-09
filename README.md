@@ -64,6 +64,8 @@
 
 理论来源（为理解源码提供理论支持）:《分组密码的攻击方法与实例分析》（李超，孙兵，李瑞林著）
 
+感谢张文英老师对本次实验的支持与帮助
+
 合作者：[ASSASSINs2066 (grimner)](https://github.com/ASSASSINs2066)	[2023ljd](https://github.com/2023ljd)
 
 期待发现和使用，欢迎提出建议！
