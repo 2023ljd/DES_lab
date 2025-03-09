@@ -212,7 +212,7 @@ int main(int argc, char* argv[]) {
 		printf("\t下面是生成的16轮子密钥.\n\n") ;
 		for(int i=1 ; i<=16 ; i++){
 			printf("\t\t第%02d轮子密钥k[%02d]:\t", i, i) ;
-			for(int j=0 ; j<8 ; j++)
+			for(int j=0 ; j<6 ; j++)
 				printf("%02X " , key_sets[i].k[j]) ;
 			printf("\n") ;
 		}
@@ -320,7 +320,7 @@ int main(int argc, char* argv[]) {
 
 		// Provide feedback
 		time_taken = (double)(finish - start)/(double)CLOCKS_PER_SEC;
-		printf("Finished processing %s. Time taken: %lf seconds.\n", argv[3], time_taken);
+		printf("Finished processing %s. Time taken: %.3lf seconds.\n", argv[3], time_taken);
 		return 0;
 	} else {
 		printf("Invalid action: %s. First parameter must be [ -g | -e | -d ].", argv[1]);
